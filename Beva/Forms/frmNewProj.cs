@@ -25,7 +25,7 @@ namespace Beva.Forms
 
         public NewProjData FormData { get; set; }
 
-        public frmNewProj(NewProjManager newProjManager): this()
+        public frmNewProj(NewProjManager newProjManager) : this()
         {
             this.newProjManager = newProjManager;
         }
@@ -79,57 +79,57 @@ namespace Beva.Forms
             var docUnits = newProjManager.CommandData.Application.ActiveUIDocument.Document.GetUnits();
             var units = newProjManager.CommandData.Application.ActiveUIDocument.Document.DisplayUnitSystem;
 
-            if (!TryParse(docUnits, txtLength.Text, out double length))
-            {
-                TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
-                return;
-            }
+            //if (!TryParse(docUnits, txtLength.Text, out double length))
+            //{
+            //    TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
+            //    return;
+            //}
 
-            if (!TryParse(docUnits, txtWidth.Text, out double width))
-            {
-                TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
-                return;
-            }
+            //if (!TryParse(docUnits, txtWidth.Text, out double width))
+            //{
+            //    TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
+            //    return;
+            //}
 
-            if (!TryParse(docUnits, txtHeight.Text, out double height))
-            {
-                TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
-                return;
-            }
+            //if (!TryParse(docUnits, txtHeight.Text, out double height))
+            //{
+            //    TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
+            //    return;
+            //}
 
-            FormData = new NewProjData
-            {
-                WallType = cbWallType.SelectedValue as WallType,
-                RoofType = cbRoofType.SelectedValue as RoofType,
-                X = x,
-                Y = y,
-                Z = z,
-                Length = length,
-                Width = width,
-                Height = height,
-                DrawingRoof = chbRoofType.Checked,
-                DrawingSlab = chbSlab.Checked
-            };
+            //FormData = new NewProjData
+            //{
+            //    WallType = cbWallType.SelectedValue as WallType,
+            //    RoofType = cbRoofType.SelectedValue as RoofType,
+            //    X = x,
+            //    Y = y,
+            //    Z = z,
+            //    Length = length,
+            //    Width = width,
+            //    Height = height,
+            //    DrawingRoof = chbRoofType.Checked,
+            //    DrawingSlab = chbSlab.Checked
+            //};
 
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private bool TryParse(Units units, string stringToParse, out double value)
-        {
-            value = 0;
+        //private bool TryParse(Units units, string stringToParse, out double value)
+        //{
+        //    value = 0;
 
-            if (string.IsNullOrWhiteSpace(stringToParse))
-            {
-                return false;
-            }
+        //    if (string.IsNullOrWhiteSpace(stringToParse))
+        //    {
+        //        return false;
+        //    }
 
-            var valueParsingOptions = new ValueParsingOptions()
-            {
-                AllowedValues = AllowedValues.Positive
-            };
+        //    var valueParsingOptions = new ValueParsingOptions()
+        //    {
+        //        AllowedValues = AllowedValues.Positive
+        //    };
 
-            return UnitFormatUtils.TryParse(units, UnitType.UT_Length, stringToParse, valueParsingOptions, out value);
-        }
+        //    return UnitFormatUtils.TryParse(units, UnitType.UT_Length, stringToParse, valueParsingOptions, out value);
+        //}
     }
 }
