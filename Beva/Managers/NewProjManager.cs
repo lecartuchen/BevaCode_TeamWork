@@ -1,8 +1,10 @@
-﻿using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 
 namespace Beva.Managers
 {
@@ -19,6 +21,16 @@ namespace Beva.Managers
 
         public NewProjManager(ExternalCommandData commandData)
         {
+            if (commandData == null)
+            {
+                throw new ArgumentNullException(nameof(commandData));
+            }
+
+            if (commandData.Application == null)
+            {
+                throw new ArgumentNullException("Application is null", nameof(commandData));
+            }
+
             this.m_commandData = commandData;
 
             Initialize();

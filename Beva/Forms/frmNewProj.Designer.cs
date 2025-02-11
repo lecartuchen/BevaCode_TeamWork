@@ -1,11 +1,15 @@
-﻿namespace Beva.Forms
+﻿using System.Windows.Forms;
+using System.ComponentModel;
+using Beva.FormData;
+
+namespace Beva.Forms
 {
-    partial class frmNewProj
+    partial class FrmNewProj
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -28,38 +32,38 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.chbRoofType = new System.Windows.Forms.CheckBox();
-            this.txtHeight = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.txtWidth = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtLength = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.txtZ = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.txtY = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.txtX = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cbRoofType = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.cbWallType = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOk = new System.Windows.Forms.Button();
-            this.label11 = new System.Windows.Forms.Label();
-            this.chbSlab = new System.Windows.Forms.CheckBox();
+            this.panel1 = new Panel();
+            this.chbRoofType = new CheckBox();
+            this.txtHeight = new TextBox();
+            this.label7 = new Label();
+            this.txtWidth = new TextBox();
+            this.label8 = new Label();
+            this.txtLength = new TextBox();
+            this.label9 = new Label();
+            this.label10 = new Label();
+            this.txtZ = new TextBox();
+            this.label6 = new Label();
+            this.txtY = new TextBox();
+            this.label5 = new Label();
+            this.txtX = new TextBox();
+            this.label4 = new Label();
+            this.label3 = new Label();
+            this.cbRoofType = new ComboBox();
+            this.label2 = new Label();
+            this.cbWallType = new ComboBox();
+            this.label1 = new Label();
+            this.groupBox1 = new GroupBox();
+            this.btnCancel = new Button();
+            this.btnOk = new Button();
+            this.label11 = new Label();
+            this.chbSlab = new CheckBox();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.panel1.Anchor = ((AnchorStyles)(((AnchorStyles.Top | AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.chbSlab);
             this.panel1.Controls.Add(this.label11);
@@ -327,30 +331,30 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.CheckBox chbRoofType;
-        private System.Windows.Forms.TextBox txtHeight;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox txtWidth;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox txtLength;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox txtZ;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtY;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox txtX;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox cbRoofType;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox cbWallType;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOk;
-        private System.Windows.Forms.CheckBox chbSlab;
-        private System.Windows.Forms.Label label11;
+        private Panel panel1;
+        private CheckBox chbRoofType;
+        private TextBox txtHeight;
+        private Label label7;
+        private TextBox txtWidth;
+        private Label label8;
+        private TextBox txtLength;
+        private Label label9;
+        private Label label10;
+        private TextBox txtZ;
+        private Label label6;
+        private TextBox txtY;
+        private Label label5;
+        private TextBox txtX;
+        private Label label4;
+        private Label label3;
+        private ComboBox cbRoofType;
+        private Label label2;
+        private ComboBox cbWallType;
+        private Label label1;
+        private GroupBox groupBox1;
+        private Button btnCancel;
+        private Button btnOk;
+        private CheckBox chbSlab;
+        private Label label11;
     }
 }

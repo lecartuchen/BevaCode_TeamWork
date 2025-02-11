@@ -1,33 +1,25 @@
-﻿using Autodesk.Revit.DB;
+﻿using System;
+
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+
 using Beva.FormData;
 using Beva.Managers;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+
+using WF = System.Windows.Forms;
 
 namespace Beva.Forms
 {
-    public partial class frmNewProj : System.Windows.Forms.Form
+    public partial class FrmNewProj : WF.Form
     {
         private readonly NewProjManager newProjManager;
 
-        public frmNewProj()
+        public NewProjData FormData { get; internal set; }
+
+        public FrmNewProj(NewProjManager npManager)
         {
+            this.newProjManager = npManager ?? throw new ArgumentNullException(nameof(npManager));
             InitializeComponent();
-        }
-
-        public NewProjData FormData { get; set; }
-
-        public frmNewProj(NewProjManager newProjManager) : this()
-        {
-            this.newProjManager = newProjManager;
         }
 
         private void frmNewProj_Load(object sender, EventArgs e)
@@ -79,50 +71,74 @@ namespace Beva.Forms
             var docUnits = newProjManager.CommandData.Application.ActiveUIDocument.Document.GetUnits();
             var units = newProjManager.CommandData.Application.ActiveUIDocument.Document.DisplayUnitSystem;
 
-            //if (!TryParse(docUnits, txtLength.Text, out double length))
-            //{
-            //    TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
-            //    return;
-            //}
+            if (!TryParse(docUnits, txtLength.Text, out double length))
+            {
+                TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
+                return;
+            }
 
-            //if (!TryParse(docUnits, txtWidth.Text, out double width))
-            //{
-            //    TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
-            //    return;
-            //}
+            if (!TryParse(docUnits, txtWidth.Text, out double width))
+            {
+                TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
+                return;
+            }
 
-            //if (!TryParse(docUnits, txtHeight.Text, out double height))
-            //{
-            //    TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
-            //    return;
-            //}
+            if (!TryParse(docUnits, txtHeight.Text, out double height))
+            {
+                TaskDialog.Show("Data validation", "Please, fix the dimensions. There are some invalid values. The project is in " + units.ToString() + " units.");
+                return;
+            }
 
-            //FormData = new NewProjData
-            //{
-            //    WallType = cbWallType.SelectedValue as WallType,
-            //    RoofType = cbRoofType.SelectedValue as RoofType,
-            //    X = x,
-            //    Y = y,
-            //    Z = z,
-            //    Length = length,
-            //    Width = width,
-            //    Height = height,
-            //    DrawingRoof = chbRoofType.Checked,
-            //    DrawingSlab = chbSlab.Checked
-            //};
+            FormData = new NewProjData
+            {
+                WallType = cbWallType.SelectedItem as WallType,
+                RoofType = cbRoofType.SelectedItem as RoofType,
+                X = x,
+                Y = y,
+                Z = z,
+                Length = length,
+                Width = width,
+                Height = height,
+                DrawingRoof = chbRoofType.Checked,
+                DrawingSlab = chbSlab.Checked
+            };
 
-            DialogResult = DialogResult.OK;
+            DialogResult = WF.DialogResult.OK;
             Close();
+        }
+
+        private bool TryParse(Units docUnits, string text, out double length)
+        {
+            length = 0;
+
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return false;
+            }
+
+            try
+            {
+                var formatOptions = docUnits.GetFormatOptions(SpecTypeId.Length);
+
+                length = UnitFormatUtils.TryParse(docUnits, SpecTypeId.Length, text, out double parsedLength)
+                    ? parsedLength
+                    : 0;
+
+                // length = UnitUtils.ParseLength(text, docUnits);
+                return length > 0;
+            }
+            catch (Exception)
+            {
+
+                return double.TryParse(text, out length);
+            }
         }
 
         //private bool TryParse(Units units, string stringToParse, out double value)
         //{
-        //    value = 0;
+        //    
 
-        //    if (string.IsNullOrWhiteSpace(stringToParse))
-        //    {
-        //        return false;
-        //    }
+        //    
 
         //    var valueParsingOptions = new ValueParsingOptions()
         //    {

@@ -1,13 +1,15 @@
-﻿using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
-using Beva.FormData;
-using Beva.Forms;
-using Beva.Managers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
+
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
+
+using Beva.FormData;
+using Beva.Forms;
+using Beva.Managers;
 
 namespace Beva.Commands
 {
@@ -19,23 +21,88 @@ namespace Beva.Commands
         {
             try
             {
-                var newProjManager = new NewProjManager(commandData);
+                // first validate the commandData
+                if (commandData == null)
+                {
+                    message = "ExternalCommandData is missing";
+                    return Result.Failed;
+                }
+
+                // second validate the application
+                if (commandData.Application == null)
+                {
+                    message = "Application commandData is missing";
+                    return Result.Failed;
+                }
+
+                NewProjManager newProjManager;
+
+                try
+                {
+                    newProjManager = new NewProjManager(commandData);
+                    if (newProjManager == null)
+                    {
+                        message = "Failed to create the NewProjManager";
+                        return Result.Failed;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    message = $"Error creating the project manager: {ex.Message}";
+                    return Result.Failed;
+                }
 
                 DialogResult result = DialogResult.None;
-                using (frmNewProj form = new frmNewProj(newProjManager))
+
+                try
                 {
-                    result = form.ShowDialog();
-
-                    if (result == DialogResult.OK)
+                    using (FrmNewProj form = new FrmNewProj(newProjManager))
                     {
-                        NewProjData data = form.FormData;
+                        if (form == null)
+                        {
+                            message = "Failed to create the form";
+                            return Result.Failed;
+                        }
 
-                        CreateHouse(commandData, data);
+                        result = form.ShowDialog();
 
-                        GetSetProjectLocation(commandData, data);
+                        if (result == DialogResult.OK)
+                        {
+                            NewProjData data = form.FormData;
 
-                        return Result.Succeeded;
+                            // Validate data and required properties
+                            if (data == null)
+                            {
+                                TaskDialog.Show("Error", "Data is missing");
+                                return Result.Failed;
+                            }
+
+                            else if (data.WallType == null)
+                            {
+                                TaskDialog.Show("Error", "Required data ( Wall Type ) is missing");
+                                return Result.Failed;
+                            }
+
+                            if (data.RoofType == null)
+                            {
+                                TaskDialog.Show("Error", "Required data ( Roof Type ) is missing");
+                                return Result.Failed;
+                            }
+
+                            CreateHouse(commandData, data);
+
+                            GetSetProjectLocation(commandData, data);
+
+                            return Result.Succeeded;
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+
+                    message = $"Error creating or showing the form: {ex.Message}";
+                    return Result.Failed;
                 }
 
                 return Result.Cancelled;
@@ -55,6 +122,11 @@ namespace Beva.Commands
             UIDocument uidoc = app.ActiveUIDocument;
 
             ViewFamilyType viewFamilyType = GetViewFamiliyType(doc);
+            if (viewFamilyType == null)
+            {
+                TaskDialog.Show("Create Basic House", "No 3D view family type found");
+                return;
+            }
 
             using (Transaction t = new Transaction(doc))
             {
@@ -101,6 +173,12 @@ namespace Beva.Commands
 
         private List<Wall> CreateWalls(Document doc, ref List<XYZ> corners, NewProjData formData, ref Level levelBottom, ref Level levelTop)
         {
+            if (doc == null || corners == null || formData == null)
+            {
+                TaskDialog.Show("Create walls", "Invalid parameters provided");
+                return null;
+            }
+
             if (!Utils.GetBottomAndTopLevels(doc, ref levelBottom, ref levelTop))
             {
                 TaskDialog.Show("Create walls", "Unable to determine wall bottom and top levels");
@@ -173,11 +251,24 @@ namespace Beva.Commands
                 CurveArray profile = new CurveArray();
                 for (int i = 0; i < 4; ++i)
                 {
-                    Line line = Line.CreateBound( // 2014
+                    Line line = Line.CreateBound(
                       corners[i], corners[3 == i ? 0 : i + 1]);
 
                     profile.Append(line);
                 }
+
+                List<Curve> curves = new List<Curve>(4);
+                foreach (Curve curve in profile)
+                {
+                    curves.Add(curve);
+                }
+
+                CurveLoop loop = CurveLoop.Create(curves);
+                List<CurveLoop> curveLoops = new List<CurveLoop>(1)
+                {
+                    loop
+                };
+
 
                 List<Element> floorTypes = new List<Element>(Utils.GetElementsOfType(doc, typeof(FloorType), BuiltInCategory.OST_Floors));
 
@@ -188,9 +279,9 @@ namespace Beva.Commands
                 XYZ normal = XYZ.BasisZ;
 
                 bool structural = false;
-                Floor floor = createDoc.NewFloor(profile, floorType, levelBottom, structural, normal);
-                //Parameter p1 = floor.get_Parameter(BuiltInParameter.FLOOR_HEIGHTABOVELEVEL_PARAM);
-                //p1.Set(formData.Z);
+                Floor floor = Floor.Create(doc, curveLoops, floorType.Id, levelBottom.Id);
+                Parameter p1 = floor.get_Parameter(BuiltInParameter.FLOOR_HEIGHTABOVELEVEL_PARAM);
+                p1.Set(formData.Z);
             }
             catch (Exception ex)
             {

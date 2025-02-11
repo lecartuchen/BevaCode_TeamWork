@@ -4,6 +4,19 @@ namespace Beva.FormData
 {
     public class NewProjData
     {
+        private NewProjData _formData;
+
+        public NewProjData FormData
+        {
+            get
+            {
+                if (_formData == null)
+                {
+                    _formData = new NewProjData();
+                }
+                return _formData;
+            }
+        }
         public WallType WallType { get; set; }
 
         public RoofType RoofType { get; set; }
